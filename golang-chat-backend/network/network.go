@@ -4,22 +4,33 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
+	"websocket-high-tps-chat/repository"
+	"websocket-high-tps-chat/service"
 )
 
-type Network struct {
-	engin *gin.Engine
+type Server struct {
+	engine *gin.Engine
+
+	service    *service.Service
+	repository *repository.Repository
+
+	port string
+	ip   string
 }
 
-func NewServer() *Network {
-	n := &Network{
-		engin: gin.New(),
+func NewServer(service *service.Service, repository *repository.Repository, port string) *Server {
+	s := &Server{
+		engine:     gin.New(),
+		service:    service,
+		repository: repository,
+		port:       port,
 	}
 
 	// api가 들어오는 것에 대한 로그
-	n.engin.Use(gin.Logger())
+	s.engine.Use(gin.Logger())
 	// panic에 의한 서버가 죽어버릴 경우 다시 서버를 재기동
-	n.engin.Use(gin.Recovery())
-	n.engin.Use(cors.New(cors.Config{
+	s.engine.Use(gin.Recovery())
+	s.engine.Use(cors.New(cors.Config{
 		AllowWebSockets:  true,
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT"},
@@ -27,15 +38,10 @@ func NewServer() *Network {
 		AllowCredentials: true,
 	}))
 
-	r := NewRoom()
-	go r.RunInit()
-
-	n.engin.GET("/room", r.SocketServe)
-
-	return n
+	return s
 }
 
-func (n *Network) StartServer() error {
+func (s *Server) StartServer() error {
 	log.Println("Starting Server")
-	return n.engin.Run(":8080")
+	return s.engine.Run(s.port)
 }

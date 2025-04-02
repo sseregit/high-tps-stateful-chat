@@ -2,9 +2,10 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"websocket-high-tps-chat/config"
+	"websocket-high-tps-chat/network"
 	"websocket-high-tps-chat/repository"
+	"websocket-high-tps-chat/service"
 )
 
 var pathFlag = flag.String("config", "./config.toml", "config set")
@@ -18,10 +19,7 @@ func main() {
 	if rep, err := repository.NewRepository(c); err != nil {
 		panic(err)
 	} else {
-		fmt.Println(*rep)
+		s := network.NewServer(service.NewService(rep), rep, *port)
+		s.StartServer()
 	}
-
-	fmt.Println(c)
-	//n := network.NewServer()
-	//n.StartServer()
 }
