@@ -9,3 +9,13 @@ type Chat struct {
 	Message string    `json:"message"`
 	When    time.Time `json:"when"`
 }
+
+func (c *Chat) ScanRow(scanner interface{ Scan(dest ...any) error }) error {
+	return scanner.Scan(
+		&c.ID,
+		&c.Room,
+		&c.Name,
+		&c.Message,
+		&c.When,
+	)
+}
