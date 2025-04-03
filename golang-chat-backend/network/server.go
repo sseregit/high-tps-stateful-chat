@@ -19,10 +19,10 @@ func registerServer(server *Server) {
 
 	server.engine.POST("/make-room", a.makeRoom)
 
-	//r := NewRoom()
-	//go r.RunInit()
-	//
-	//server.engine.GET("/room", r.SocketServe)
+	r := NewRoom(server.service)
+	go r.Run()
+
+	server.engine.GET("/room-chat", r.ServerHTTP)
 }
 
 func (a *api) roomList(c *gin.Context) {

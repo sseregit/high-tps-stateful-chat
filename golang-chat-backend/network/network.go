@@ -4,26 +4,23 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
-	"websocket-high-tps-chat/repository"
 	"websocket-high-tps-chat/service"
 )
 
 type Server struct {
 	engine *gin.Engine
 
-	service    *service.Service
-	repository *repository.Repository
+	service *service.Service
 
 	port string
 	ip   string
 }
 
-func NewServer(service *service.Service, repository *repository.Repository, port string) *Server {
+func NewServer(service *service.Service, port string) *Server {
 	s := &Server{
-		engine:     gin.New(),
-		service:    service,
-		repository: repository,
-		port:       port,
+		engine:  gin.New(),
+		service: service,
+		port:    port,
 	}
 
 	// api가 들어오는 것에 대한 로그

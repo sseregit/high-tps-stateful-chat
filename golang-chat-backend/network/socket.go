@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"websocket-high-tps-chat/service"
 	"websocket-high-tps-chat/types"
 )
 
@@ -14,9 +15,10 @@ var upgrader = &websocket.Upgrader{ReadBufferSize: types.SocketBufferSize, Write
 }}
 
 type message struct {
-	Name    string
-	Message string
-	Time    int64
+	Name    string `json:"name"`
+	Message string `json:"message"`
+	Room    string `json:"room"`
+	When    int64  `json:"when"`
 }
 
 type Room struct {
@@ -25,6 +27,8 @@ type Room struct {
 	Leave   chan *client  // Socket이 끊어지는 경우에 대해서 작동
 
 	clients map[*client]bool // 현재 방에 있는 client 정보를 저장
+
+	service *service.Service
 }
 
 type client struct {
@@ -34,12 +38,13 @@ type client struct {
 	Socket *websocket.Conn
 }
 
-func NewRoom() *Room {
+func NewRoom(service *service.Service) *Room {
 	return &Room{
 		Forward: make(chan *message),
 		Join:    make(chan *client),
 		Leave:   make(chan *client),
 		clients: make(map[*client]bool),
+		service: service,
 	}
 }
 
@@ -57,7 +62,7 @@ func (c *client) Read() {
 		} else {
 			log.Println("READ : ", msg, "client", c.Name)
 			log.Println()
-			msg.Time = time.Now().Unix()
+			msg.When = time.Now().Unix()
 			msg.Name = c.Name
 
 			c.Room.Forward <- msg
@@ -78,7 +83,7 @@ func (c *client) Write() {
 	}
 }
 
-func (r *Room) RunInit() {
+func (r *Room) Run() {
 	for {
 		select {
 		case client := <-r.Join:
@@ -88,6 +93,9 @@ func (r *Room) RunInit() {
 			delete(r.clients, client)
 			close(client.Send)
 		case msg := <-r.Forward:
+
+			go r.service.InsertChatting(msg.Name, msg.Message, msg.Room)
+
 			for client := range r.clients {
 				client.Send <- msg
 			}
@@ -95,22 +103,27 @@ func (r *Room) RunInit() {
 	}
 }
 
-func (r *Room) SocketServe(c *gin.Context) {
+func (r *Room) ServerHTTP(c *gin.Context) {
+
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+
 	socket, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
-		panic(err)
+		log.Fatal("---- serveHTTP:", err)
+		return
 	}
 
-	userCookie, err := c.Request.Cookie("auth")
+	authCookie, err := c.Request.Cookie("auth")
 	if err != nil {
-		panic(err)
+		log.Fatal("auth cookie is failed", err)
+		return
 	}
 
 	client := &client{
 		Socket: socket,
 		Send:   make(chan *message, types.MessageBufferSize),
 		Room:   r,
-		Name:   userCookie.Value,
+		Name:   authCookie.Value,
 	}
 
 	r.Join <- client

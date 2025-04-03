@@ -15,6 +15,12 @@ func NewService(repository *repository.Repository) *Service {
 	return s
 }
 
+func (s *Service) InsertChatting(user, message, roomName string) {
+	if err := s.repository.InsertChatting(user, message, roomName); err != nil {
+		log.Println("Failed To Chat", "err", err)
+	}
+}
+
 func (s *Service) EnterRoom(roomName string) ([]*schema.Chat, error) {
 	if res, err := s.repository.GetChatList(roomName); err != nil {
 		log.Println("Failed To Get Chat List", "err", err.Error())
@@ -23,7 +29,6 @@ func (s *Service) EnterRoom(roomName string) ([]*schema.Chat, error) {
 		return res, nil
 	}
 }
-
 func (s *Service) RoomList() ([]*schema.Room, error) {
 	if res, err := s.repository.RoomList(); err != nil {
 		log.Println("Failed To Get All Room List", "err", err.Error())
@@ -32,7 +37,6 @@ func (s *Service) RoomList() ([]*schema.Room, error) {
 		return res, nil
 	}
 }
-
 func (s *Service) MakeRoom(name string) error {
 	if err := s.repository.MakeRoom(name); err != nil {
 		log.Println("Failed To Make New Room", "err", err.Error())
