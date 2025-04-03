@@ -38,6 +38,8 @@ func NewServer(service *service.Service, repository *repository.Repository, port
 		AllowCredentials: true,
 	}))
 
+	registerServer(s)
+
 	return s
 }
 
