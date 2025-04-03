@@ -69,6 +69,10 @@ func getList[T schema.Scannable](rows *sql.Rows, constructor func() T) ([]T, err
 
 	}
 
+	if result == nil {
+		result = []T{}
+	}
+
 	return result, nil
 
 }
@@ -89,9 +93,22 @@ func (s *Repository) Room(name string) (*schema.Room, error) {
 		&d.UpdateAt,
 	)
 
-	return d, err
+	if err = noResut(err); err != nil {
+		return nil, err
+	} else {
+		return nil, nil
+	}
+
 }
 
 func query(qs []string) string {
 	return strings.Join(qs, " ") + ";"
+}
+
+func noResut(err error) error {
+	if strings.Contains(err.Error(), "sql: no rows in result set") {
+		return nil
+	} else {
+		return err
+	}
 }

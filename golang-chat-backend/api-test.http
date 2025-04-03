@@ -1,0 +1,20 @@
+### GET /room-list
+GET {{domain}}/room-list
+Accept: application/json
+
+### GET /room
+GET {{domain}}/room?name=test
+Accept: application/json
+
+### GET /enter-room
+GET {{domain}}/enter-room
+Accept: application/json
+
+### POST /make-room
+POST {{domain}}/make-room
+Content-Type: application/json
+
+{
+  "name": "test"
+}
+
