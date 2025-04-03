@@ -5,3 +5,4 @@ golang-chat-backend/go.sum
 *.env.json
 .env
 
+front/node_modules

@@ -15,6 +15,6 @@ POST {{domain}}/make-room
 Content-Type: application/json
 
 {
-  "name": "test"
+  "name": "axc"
 }
 
