@@ -15,5 +15,17 @@ services:
     volumes:
       - chat-mysql:/var/lib/mysql
 
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:7.9.0
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+    volumes:
+      - chat-zookeeper:/var/lib/zookeeper
+
 volumes:
   chat-mysql:
+  chat-zookeeper:
