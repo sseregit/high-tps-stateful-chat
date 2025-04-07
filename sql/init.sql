@@ -17,5 +17,5 @@ CREATE TABLE IF NOT EXISTS chat (
 
 CREATE TABLE IF NOT EXISTS serverInfo (
     `ip` varchar(255) primary key NOT NULL,
-    `avaliable` bool not null
+    `available` bool not null
 );

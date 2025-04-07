@@ -3,5 +3,5 @@ database = "mysql"
 url = "root:admin123@tcp(localhost:3306)/chatting?multiStatements=true&parseTime=true"
 
 [kafka]
-URL="localhost:9092"
+URL="localhost:29092"
 ClientId="chat-producer-1"

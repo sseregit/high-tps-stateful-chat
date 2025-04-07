@@ -42,12 +42,12 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: true # 토픽 자동 생성 옵션 관리가 어렵기 때문에 false추천
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181 # kafka가 zookeeper에 커넥션하기 위한 대상 지정
       # 보안을 위한 프로토콜 매핑 KAFKA_ADVERTISED_LISTENERS와 함께 key/value로 매핑된다.
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       # Kafka 브로커가 실제 리스닝(bind)할 주소 및 포트를 정의한다.
       # 0.0.0.0은 모든 인터페이스에서 수신 대기한다.
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
       # 외부에서 접속하기 위한 리스너 설정
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092,PLAINTEXT_HOST://localhost:29092
       # 도커 내부에서 사용할 리스너 이름을 지정한다
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       # 컨슈머 그룹 오프셋을 저장하는 __consumer_offsets 토픽의 복제 계수를 지정한다.

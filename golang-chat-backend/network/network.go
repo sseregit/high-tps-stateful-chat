@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net"
 	"websocket-high-tps-chat/service"
 )
 
@@ -40,7 +41,37 @@ func NewServer(service *service.Service, port string) *Server {
 	return s
 }
 
+func (s *Server) setServerInfo() {
+	if addrs, err := net.InterfaceAddrs(); err != nil {
+		panic(err.Error())
+	} else {
+		var ip net.IP
+
+		for _, addr := range addrs {
+			if ipnet, ok := addr.(*net.IPNet); ok {
+				if !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+					ip = ipnet.IP
+					break
+				}
+			}
+		}
+
+		if ip == nil {
+			panic("no ip address found")
+		} else {
+			if err = s.service.ServerSet(ip.String()+s.port, true); err != nil {
+				panic(err)
+			} else {
+				s.ip = ip.String()
+			}
+		}
+	}
+
+}
+
 func (s *Server) StartServer() error {
+	s.setServerInfo()
+
 	log.Println("Starting Server")
 	return s.engine.Run(s.port)
 }
