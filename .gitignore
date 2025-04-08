@@ -6,3 +6,4 @@
 .env
 
 front/node_modules
+node-kafka/node_modules
