@@ -19,7 +19,7 @@ func NewKafka(cfg *config.Config) (*Kafka, error) {
 	if k.consumer, err = kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": cfg.Kafka.URL,
 		"group.id":          cfg.Kafka.GroupID,
-		"auto.offset.rest":  "latest", // 최근값만 읽겠다.
+		"auto.offset.reset": "latest", // 최근값만 읽겠다.
 	}); err != nil {
 		return nil, err
 	} else {
