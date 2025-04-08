@@ -1,10 +1,14 @@
 package network
 
 import (
+	"encoding/json"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
 	"websocket-high-tps-chat/service"
 )
 
@@ -71,6 +75,35 @@ func (s *Server) setServerInfo() {
 
 func (s *Server) StartServer() error {
 	s.setServerInfo()
+
+	// 서버가 죽는것을 캐치할 수 있는법
+	channel := make(chan os.Signal, 1)
+	signal.Notify(channel, syscall.SIGINT)
+
+	go func() {
+		<-channel
+
+		if err := s.service.ServerSet(s.ip+s.port, false); err != nil {
+			log.Println("Failed To Set Server Info When Close", "err", err)
+		}
+
+		// Kafka에 이벤트 전송
+
+		type ServerInfoEvent struct {
+			IP     string
+			Status bool
+		}
+
+		e := &ServerInfoEvent{IP: s.ip + s.port, Status: false}
+
+		if v, err := json.Marshal(e); err != nil {
+			log.Println("Failed To Marshal")
+		} else {
+
+		}
+
+		os.Exit(1)
+	}()
 
 	log.Println("Starting Server")
 	return s.engine.Run(s.port)

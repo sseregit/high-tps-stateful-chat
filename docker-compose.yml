@@ -45,8 +45,10 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       # Kafka 브로커가 실제 리스닝(bind)할 주소 및 포트를 정의한다.
       # 0.0.0.0은 모든 인터페이스에서 수신 대기한다.
+      # 물리적으로 브로커가 어떤 IP/포트에서 수신 대기(Bind)
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
       # 외부에서 접속하기 위한 리스너 설정
+      # 클라이언트에게 “접속 주소”를 어떻게 공표(Advertise)
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092,PLAINTEXT_HOST://localhost:29092
       # 도커 내부에서 사용할 리스너 이름을 지정한다
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
