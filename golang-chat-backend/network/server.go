@@ -2,8 +2,8 @@ package network
 
 import (
 	"github.com/gin-gonic/gin"
+	"golang-chat-backend/types"
 	"net/http"
-	"websocket-high-tps-chat/types"
 )
 
 type api struct {

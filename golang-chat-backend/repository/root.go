@@ -3,11 +3,11 @@ package repository
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"golang-chat-backend/config"
+	"golang-chat-backend/repository/kafka"
+	"golang-chat-backend/types/schema"
 	"log"
 	"strings"
-	"websocket-high-tps-chat/config"
-	"websocket-high-tps-chat/repository/kafka"
-	"websocket-high-tps-chat/types/schema"
 )
 
 type Repository struct {

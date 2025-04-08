@@ -3,11 +3,11 @@ package network
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"golang-chat-backend/service"
+	"golang-chat-backend/types"
 	"log"
 	"net/http"
 	"time"
-	"websocket-high-tps-chat/service"
-	"websocket-high-tps-chat/types"
 )
 
 var upgrader = &websocket.Upgrader{ReadBufferSize: types.SocketBufferSize, WriteBufferSize: types.MessageBufferSize, CheckOrigin: func(r *http.Request) bool {

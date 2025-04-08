@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	"websocket-high-tps-chat/config"
-	"websocket-high-tps-chat/network"
-	"websocket-high-tps-chat/repository"
-	"websocket-high-tps-chat/service"
+	"golang-chat-backend/config"
+	"golang-chat-backend/network"
+	"golang-chat-backend/repository"
+	"golang-chat-backend/service"
 )
 
 var pathFlag = flag.String("config", "./config.toml", "config set")
@@ -19,7 +19,7 @@ func main() {
 	if rep, err := repository.NewRepository(c); err != nil {
 		panic(err)
 	} else {
-		s := network.NewServer(service.NewService(rep), *port)
+		s := network.NewNetwork(service.NewService(rep), *port)
 		s.StartServer()
 	}
 }

@@ -2,9 +2,9 @@ package service
 
 import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"golang-chat-backend/repository"
+	"golang-chat-backend/types/schema"
 	"log"
-	"websocket-high-tps-chat/repository"
-	"websocket-high-tps-chat/types/schema"
 )
 
 type Service struct {

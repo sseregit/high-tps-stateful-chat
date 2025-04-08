@@ -2,7 +2,7 @@ package network
 
 import (
 	"github.com/gin-gonic/gin"
-	"websocket-high-tps-chat/types"
+	"golang-chat-backend/types"
 )
 
 func response(c *gin.Context, s int, res interface{}, data ...string) {

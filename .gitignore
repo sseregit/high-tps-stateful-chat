@@ -1,7 +1,7 @@
 .idea
 
 *.iml
-golang-chat-backend/go.sum
+*/go.sum
 *.env.json
 .env
 

@@ -5,12 +5,12 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"golang-chat-backend/service"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
-	"websocket-high-tps-chat/service"
 )
 
 type Server struct {
@@ -22,7 +22,7 @@ type Server struct {
 	ip   string
 }
 
-func NewServer(service *service.Service, port string) *Server {
+func NewNetwork(service *service.Service, port string) *Server {
 	s := &Server{
 		engine:  gin.New(),
 		service: service,

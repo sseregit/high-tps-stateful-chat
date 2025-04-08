@@ -2,7 +2,7 @@ package kafka
 
 import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"golang-chat-backend/config"
+	"golang-chat-controller/config"
 )
 
 type Kafka struct {
@@ -25,19 +25,4 @@ func NewKafka(cfg *config.Config) (*Kafka, error) {
 	} else {
 		return k, nil
 	}
-}
-
-func (k *Kafka) PublishEvent(topic string, value []byte, ch chan kafka.Event) (kafka.Event, error) {
-	if err := k.producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{
-			Topic:     &topic,
-			Partition: kafka.PartitionAny,
-		},
-		Value: value,
-	}, ch); err != nil {
-		return nil, err
-	} else {
-		return <-ch, nil
-	}
-
 }
