@@ -2,6 +2,7 @@ package network
 
 import (
 	"encoding/json"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -95,11 +96,14 @@ func (s *Server) StartServer() error {
 		}
 
 		e := &ServerInfoEvent{IP: s.ip + s.port, Status: false}
+		ch := make(chan kafka.Event)
 
 		if v, err := json.Marshal(e); err != nil {
 			log.Println("Failed To Marshal")
+		} else if result, err := s.service.PublishEvent("chat", v, ch); err != nil {
+			log.Println("Failed To Send Event To Kafka", "err", err)
 		} else {
-
+			log.Println("Success To Send Event", result)
 		}
 
 		os.Exit(1)

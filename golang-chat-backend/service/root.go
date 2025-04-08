@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"log"
 	"websocket-high-tps-chat/repository"
 	"websocket-high-tps-chat/types/schema"
@@ -14,6 +15,11 @@ func NewService(repository *repository.Repository) *Service {
 	s := &Service{repository: repository}
 	return s
 }
+
+func (s *Service) PublishEvent(topic string, value []byte, ch chan kafka.Event) (kafka.Event, error) {
+	return s.repository.Kafka.PublishEvent(topic, value, ch)
+}
+
 func (s *Service) ServerSet(ip string, available bool) error {
 	if err := s.repository.ServerSet(ip, available); err != nil {
 		log.Println("Failed To ServerSet", "ip", ip, "available", available)
