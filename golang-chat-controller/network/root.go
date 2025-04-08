@@ -12,16 +12,14 @@ type Server struct {
 
 	service *service.Service
 
-	port          string
-	avgServerList map[string]bool
+	port string
 }
 
 func NewNetwork(service *service.Service, port string) *Server {
 	s := &Server{
-		engine:        gin.New(),
-		service:       service,
-		port:          port,
-		avgServerList: make(map[string]bool),
+		engine:  gin.New(),
+		service: service,
+		port:    port,
 	}
 
 	// api가 들어오는 것에 대한 로그
@@ -36,19 +34,9 @@ func NewNetwork(service *service.Service, port string) *Server {
 		AllowCredentials: true,
 	}))
 
-	s.setServerInfo()
+	registerTowerAPI(s)
 
 	return s
-}
-
-func (s *Server) setServerInfo() {
-	if serverList, err := s.service.GetAvailableServerList(); err != nil {
-		panic(err)
-	} else {
-		for _, server := range serverList {
-			s.avgServerList[server.IP] = true
-		}
-	}
 }
 
 func (s *Server) Start() error {
