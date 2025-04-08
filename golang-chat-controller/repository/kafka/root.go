@@ -8,7 +8,7 @@ import (
 type Kafka struct {
 	cfg *config.Config
 
-	producer *kafka.Producer
+	consumer *kafka.Consumer
 }
 
 func NewKafka(cfg *config.Config) (*Kafka, error) {
@@ -16,13 +16,25 @@ func NewKafka(cfg *config.Config) (*Kafka, error) {
 
 	var err error
 
-	if k.producer, err = kafka.NewProducer(&kafka.ConfigMap{
+	if k.consumer, err = kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": cfg.Kafka.URL,
-		"client.id":         cfg.Kafka.ClientID,
-		"acks":              "all",
+		"group.id":          cfg.Kafka.GroupID,
+		"auto.offset.rest":  "latest", // 최근값만 읽겠다.
 	}); err != nil {
 		return nil, err
 	} else {
 		return k, nil
+	}
+}
+
+func (k *Kafka) Poll(timeoutMs int) kafka.Event {
+	return k.consumer.Poll(timeoutMs)
+}
+
+func (k *Kafka) RegisterSubTopic(topic string) error {
+	if err := k.consumer.Subscribe(topic, nil); err != nil {
+		return err
+	} else {
+		return nil
 	}
 }
